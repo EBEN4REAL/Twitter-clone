@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  name     String?
+  posts    Post[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  viewCount Int      @default(0)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+}
+
+
+// Run npx prisma generate to Generate the schema 
+// Ruyn mpx prisma migrate save --experimental to migrate the schema to the database
+
+// Smaple connetion string 
+// postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+
+// To Migrate your database schemea to postgres use:   npx prisma migrate dev
