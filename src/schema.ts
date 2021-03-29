@@ -307,14 +307,7 @@ const Post = objectType({
     })
   },
 })
-// id  Int @id @default(autoincrement())
-// createdAt DateTime @default(now())
-// bio  String?
-// location  String?
-// website String?
-// avatar String?
-// userId Int? @unique
-// User  User? @relation(fields: [userId], references: [id])
+
 const Profile = objectType({
   name: 'Profile',
   definition(t) {
@@ -326,14 +319,14 @@ const Profile = objectType({
     t.string('website')
     t.string('avatar')
     t.int('userId')
-    t.field('author', {
+    t.field('user', {
       type: 'User',
       resolve: (parent, _, context: Context) => {
-        return context.prisma.post
+        return context.prisma.profile
           .findUnique({
             where: { id: parent.id || undefined },
           })
-          .author()
+          .User()
       },
     })
   },

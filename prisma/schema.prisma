@@ -38,7 +38,7 @@ model Profile {
   website String?
   avatar String?
   userId Int? @unique
-  User  User? @relation(fields: [userId], references: [id])
+  user  User? @relation(fields: [userId], references: [id])
 }
 
 model Tweet {

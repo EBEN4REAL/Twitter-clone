@@ -42,13 +42,13 @@ input PostOrderByUpdatedAtInput {
 }
 
 type Profile {
-  author: User
   avatar: String
   bio: String
   createdAt: DateTime!
   id: Int!
   location: String
   updatedAt: DateTime!
+  user: User
   userId: Int
   website: String
 }
