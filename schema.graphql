@@ -14,11 +14,13 @@ scalar DateTime
 
 type Mutation {
   createDraft(data: PostCreateInput!): Post
+  createProfile(avatar: String, bio: String, location: String, website: String): Profile
   deletePost(id: Int!): Post
   incrementPostViewCount(id: Int!): Post
   login(email: String!, password: String!): AuthPayload
   signup(email: String!, name: String, password: String!): AuthPayload
   togglePublishPost(id: Int!): Post
+  updateProfile(avatar: String, bio: String, id: Int, location: String, website: String): Profile
 }
 
 type Post {
@@ -44,12 +46,9 @@ input PostOrderByUpdatedAtInput {
 type Profile {
   avatar: String
   bio: String
-  createdAt: DateTime!
+  email: String
   id: Int!
   location: String
-  updatedAt: DateTime!
-  user: User
-  userId: Int
   website: String
 }
 
@@ -58,6 +57,7 @@ type Query {
   feed(orderBy: PostOrderByUpdatedAtInput, searchString: String, skip: Int, take: Int): [Post!]!
   me: User
   postById(id: Int): Post
+  profile: Profile
   users(orderBy: PostOrderByUpdatedAtInput, searchString: String, skip: Int, take: Int): [User!]!
 }
 

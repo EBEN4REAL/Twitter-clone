@@ -41,6 +41,19 @@ const Query = objectType({
       },
     })
 
+    t.nullable.field('profile', {
+      type: 'Profile',
+      resolve: (parent, args, context: Context) => {
+        const userId = getUserId(context)
+        return context.prisma.user.findUnique({
+          where: {
+            id: Number(userId),
+          },
+        })
+      },
+    })
+
+
     t.nullable.field('postById', {
       type: 'Post',
       args: {
@@ -311,6 +324,8 @@ const Mutation = objectType({
   },
 })
 
+
+
 const User = objectType({
   name: 'User',
   definition(t) {
@@ -329,6 +344,7 @@ const User = objectType({
     })
   },
 })
+
 
 const Post = objectType({
   name: 'Post',
@@ -350,6 +366,28 @@ const Post = objectType({
           .author()
       },
     })
+  },
+})
+
+const Profile = objectType({
+  name: 'Profile',
+  definition(t) {
+    t.nonNull.int('id')
+    t.string('bio')
+    t.string('location')
+    t.string('website')
+    t.string('avatar')
+    t.string('email')
+    // t.nonNull.list.nonNull.field('user', {
+    //   type: 'User',
+    //   resolve: (parent, _, context: Context) => {
+    //     return context.prisma.profile
+    //       .findUnique({
+    //         where: { id: parent.id || undefined },
+    //       })
+    //       .User()
+    //   },
+    // })
   },
 })
 
@@ -405,6 +443,7 @@ const schemaWithoutPermissions = makeSchema({
     Mutation,
     Post,
     User,
+    Profile,
     AuthPayload,
     UserUniqueInput,
     UserCreateInput,
