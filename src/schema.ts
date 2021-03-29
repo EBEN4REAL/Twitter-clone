@@ -163,6 +163,51 @@ const Mutation = objectType({
       },
     })
 
+    t.field('createProfile', {
+      type: 'Profile',
+      args: {
+        bio: stringArg(),
+        location: stringArg(),
+        website: stringArg(),
+        avatar: stringArg()
+      },
+      resolve: async (_parent, args, context: Context) => {
+        const userId = getUserId(context)
+        if(!userId) throw new Error('Could not authenticate user.')
+        return context.prisma.profile.create({
+          data: {
+            ...args,
+            User: {connect: {id:Number(userId)}}
+          }
+        })
+      },
+    })
+
+    t.field('updateProfile', {
+      type: 'Profile',
+      args: {
+        id: intArg(),
+        bio: stringArg(),
+        location: stringArg(),
+        website: stringArg(),
+        avatar: stringArg()
+      },
+      resolve: async (_parent, {id, ...args }, context: Context) => {
+        const userId = getUserId(context)
+        if(!userId) throw new Error('Could not authenticate user.')
+        return context.prisma.profile.update({
+          data: {
+            ...args,
+            
+          },
+          where: {
+            id: Number(id),
+          }
+        })
+      },
+    })
+
+
     t.field('login', {
       type: 'AuthPayload',
       args: {
@@ -308,29 +353,6 @@ const Post = objectType({
   },
 })
 
-const Profile = objectType({
-  name: 'Profile',
-  definition(t) {
-    t.nonNull.int('id')
-    t.nonNull.field('createdAt', { type: 'DateTime' })
-    t.nonNull.field('updatedAt', { type: 'DateTime' })
-    t.string('bio')
-    t.string('location')
-    t.string('website')
-    t.string('avatar')
-    t.int('userId')
-    t.field('user', {
-      type: 'User',
-      resolve: (parent, _, context: Context) => {
-        return context.prisma.profile
-          .findUnique({
-            where: { id: parent.id || undefined },
-          })
-          .User()
-      },
-    })
-  },
-})
 
 const SortOrder = enumType({
   name: 'SortOrder',
@@ -380,7 +402,6 @@ const AuthPayload = objectType({
 const schemaWithoutPermissions = makeSchema({
   types: [
     Query,
-    Profile,
     Mutation,
     Post,
     User,
