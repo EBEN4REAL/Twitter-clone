@@ -50,7 +50,7 @@ model Tweet {
 
 
 // Run npx prisma generate to Generate the schema 
-// Ruyn mpx prisma migrate save --experimental to migrate the schema to the database
+// Run mpx prisma migrate save --experimental to migrate the schema to the database
 
 // Smaple connetion string 
 // postgresql://USER:PASSWORD@HOST:PORT/DATABASE
