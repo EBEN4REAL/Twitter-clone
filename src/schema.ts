@@ -22,7 +22,7 @@ export const DateTime = asNexusMethod(GraphQLDateTime, 'date')
 const Query = objectType({
   name: 'Query',
   definition(t) {
-    t.nonNull.list.nonNull.field('allUsers', {
+    t.nonNull.list.nonNull.field('users', {
       type: 'User',
       resolve: (_parent, _args, context: Context) => {
         return context.prisma.user.findMany()
@@ -52,6 +52,8 @@ const Query = objectType({
         })
       },
     })
+
+    
 
     t.nonNull.list.nonNull.field('feed', {
       type: 'Post',
@@ -305,6 +307,37 @@ const Post = objectType({
     })
   },
 })
+// id  Int @id @default(autoincrement())
+// createdAt DateTime @default(now())
+// bio  String?
+// location  String?
+// website String?
+// avatar String?
+// userId Int? @unique
+// User  User? @relation(fields: [userId], references: [id])
+const Profile = objectType({
+  name: 'Profile',
+  definition(t) {
+    t.nonNull.int('id')
+    t.nonNull.field('createdAt', { type: 'DateTime' })
+    t.nonNull.field('updatedAt', { type: 'DateTime' })
+    t.string('bio')
+    t.string('location')
+    t.string('website')
+    t.string('avatar')
+    t.int('userId')
+    t.field('author', {
+      type: 'User',
+      resolve: (parent, _, context: Context) => {
+        return context.prisma.post
+          .findUnique({
+            where: { id: parent.id || undefined },
+          })
+          .author()
+      },
+    })
+  },
+})
 
 const SortOrder = enumType({
   name: 'SortOrder',
@@ -354,6 +387,7 @@ const AuthPayload = objectType({
 const schemaWithoutPermissions = makeSchema({
   types: [
     Query,
+    Profile,
     Mutation,
     Post,
     User,

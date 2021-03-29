@@ -41,8 +41,19 @@ input PostOrderByUpdatedAtInput {
   updatedAt: SortOrder!
 }
 
+type Profile {
+  author: User
+  avatar: String
+  bio: String
+  createdAt: DateTime!
+  id: Int!
+  location: String
+  updatedAt: DateTime!
+  userId: Int
+  website: String
+}
+
 type Query {
-  allUsers: [User!]!
   draftsByUser(userUniqueInput: UserUniqueInput!): [Post]
   feed(orderBy: PostOrderByUpdatedAtInput, searchString: String, skip: Int, take: Int): [Post!]!
   me: User
